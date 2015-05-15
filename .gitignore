@@ -1,4 +1,11 @@
 /bin/
-db.properties
+/src/bin
 .classpath
 .project
+*.iml
+/.idea/
+.settings
+*.log*
+*.lck
+out
+db.properties
