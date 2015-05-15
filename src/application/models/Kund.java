@@ -46,8 +46,18 @@ public class Kund {
 
 	@Override
 	public String toString() {
-		return String.format("%s, %s, %s, %s, %s, %s", personnr, namn,
-				telefonnr, mail, losenord, adress);
+		return String.format("%s, %s, %s, %s, %s", personnr, namn,
+				telefonnr, mail, adress);
+	}
+
+	public static Object[] getColumnNames() {
+		return new String[] {
+				"Personnr",
+				"Namn",
+				"Telefonnr",
+				"E-mail",
+				"Adress"
+		};
 	}
 	
 }

@@ -57,6 +57,18 @@ public class Tur {
 		return kapacitet;
 	}
 	
+	public static String[] getColumnNames() {
+		return new String[] {"ID",
+				"Pris",
+				"Avreseort",
+				"Avresedag",
+				"Avresetid",
+				"Ankomstort",
+				"Ankomstdag",
+				"Ankomsttid",
+				"Kapacitet"};
+	}
+	
 	@Override
 	public String toString() {
 		return id + "," + kostnad + ","

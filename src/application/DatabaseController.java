@@ -69,7 +69,7 @@ public class DatabaseController {
 		try {
 			Statement select = con.createStatement();
 			ResultSet result;
-			result = select.executeQuery("SELECT * FROM tur");
+			result = select.executeQuery("SELECT * FROM kund");
 			
 			while (result.next()) {
 				
@@ -94,9 +94,19 @@ public class DatabaseController {
 		throw new RuntimeException("Not implemented yet!");
 	}
 	
-	public Bokning addBokning(Kund kund, ArrayList<Tur> turer) {
+	public Bokning addBokning(String kund, ArrayList<Integer> turer) {
 		
-		throw new RuntimeException("Not implemented yet!");
+		// skapa bokning
+		// insert into bokning
+		
+		// räkna ut datum
+		// for turer, select tur
+		// mattematik
+		
+		// lägg till turid och bokningsid i bokad resa 
+		// insert into bokad_resa
+		
+		return null;
 	}
 
 	public ArrayList<String> getUserList() {
@@ -150,5 +160,28 @@ public class DatabaseController {
 			}
 		}
 		return false;
+	}
+
+	public ArrayList<Paketresa> getPaketresor() {
+		ArrayList<Paketresa> paketresor = new ArrayList<Paketresa>();
+		
+		try {
+			Statement select = con.createStatement();
+			ResultSet result;
+			result = select.executeQuery("SELECT * FROM paketresa GROUP BY namn");
+			
+			while (result.next()) {
+				
+				paketresor.add(new Paketresa(
+						result.getString(1),
+						result.getInt(2),
+						result.getInt(3)));
+				
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		
+		return paketresor;
 	}
 }

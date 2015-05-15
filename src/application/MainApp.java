@@ -1,5 +1,7 @@
 package application;
 
+import gui.ApplicationGUI;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +29,7 @@ public class MainApp {
 				prop.getProperty("password"), 
 				prop.getProperty("database"));
 		
-		SimpleUI ui = new SimpleUI(dbC);
+		ApplicationGUI ui = new ApplicationGUI(dbC);
 //		System.out.println(dbC.getDogs(1));
 		
 		ArrayList<Tur> turer = dbC.getTurer();
