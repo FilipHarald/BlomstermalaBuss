@@ -62,6 +62,42 @@ public class DatabaseController {
 		return turer;
 	
 	}
+	
+	public ArrayList<Kund> getKunder() {
+		ArrayList<Kund> kunder = new ArrayList<Kund>();
+		
+		try {
+			Statement select = con.createStatement();
+			ResultSet result;
+			result = select.executeQuery("SELECT * FROM tur");
+			
+			while (result.next()) {
+				
+				kunder.add(new Kund(
+						result.getString(1),
+						result.getString(2),
+						result.getString(3),
+						result.getString(4),
+						result.getString(5),
+						result.getString(6)));
+				
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		
+		return kunder;
+	
+	}
+	
+	public void addKund(Kund kund) {
+		throw new RuntimeException("Not implemented yet!");
+	}
+	
+	public Bokning addBokning(Kund kund, ArrayList<Tur> turer) {
+		
+		throw new RuntimeException("Not implemented yet!");
+	}
 
 	public ArrayList<String> getUserList() {
 		ArrayList<String> users = new ArrayList<String>();
