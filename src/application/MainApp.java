@@ -1,13 +1,8 @@
 package application;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -35,11 +30,11 @@ public class MainApp {
 		SimpleUI ui = new SimpleUI(dbC);
 //		System.out.println(dbC.getDogs(1));
 		
-		//ArrayList<Tur> turer = dbC.getTurer();
+		ArrayList<Tur> turer = dbC.getTurer();
 		
-		//for (Tur tur : turer) {
-			//System.out.println(tur);
-		//}
+		for (Tur tur : turer) {
+			System.out.println(tur);
+		}
 	}
 	
 }

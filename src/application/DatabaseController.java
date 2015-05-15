@@ -18,7 +18,7 @@ public class DatabaseController {
 		con = null;
 		
 		try {
-			String driver = "org.mariadb.jdbc.Driver";
+			String driver = "com.mysql.jdbc.Driver";
 			Class.forName(driver).newInstance();
 		} catch (Exception e) {
 			System.out.println("Failed to load MySQL driver.");
@@ -26,7 +26,7 @@ public class DatabaseController {
 		}
 		
 		try {
-			con = DriverManager.getConnection("jdbc:mysql://albertkaaman.se:3306/blomstermalabuss", userId, password);
+			con = DriverManager.getConnection(this.url, this.userId, this.password);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
