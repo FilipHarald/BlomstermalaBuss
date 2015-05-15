@@ -2,54 +2,65 @@ package application;
 import java.sql.*;
 import java.util.ArrayList;
 
+import application.models.*;
+
 public class DatabaseController {
 	private String url;
 	private String userId;
 	private String password;
 	private Connection con;
 
-	public DatabaseController(String url, String userId, String password) {
-		this.url = url;
+	public DatabaseController(String url, String userId, String password, String database) {
+		this.url = String.format("jdbc:mysql://%s:3306/%s", url, database);
+		System.out.println(this.url);
 		this.userId = userId;
 		this.password = password;
 		con = null;
+		
 		try {
-			String driver = "com.mysql.jdbc.Driver";
+			String driver = "org.mariadb.jdbc.Driver";
 			Class.forName(driver).newInstance();
 		} catch (Exception e) {
 			System.out.println("Failed to load MySQL driver.");
 			return;
 		}
-	}
-
-	public ArrayList<String> getDogs(int OwnerId) {
-		ArrayList<String> dogs = new ArrayList<String>();
+		
 		try {
-			con = DriverManager.getConnection(url, userId, password);
+			con = DriverManager.getConnection("jdbc:mysql://albertkaaman.se:3306/blomstermalabuss", userId, password);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public ArrayList<Tur> getTurer() {
+		ArrayList<Tur> turer = new ArrayList<Tur>();
+		
+		try {
 			Statement select = con.createStatement();
 			ResultSet result;
-			if (OwnerId != 0) {
-				result = select.executeQuery(String.format(
-						"SELECT * FROM Hund WHERE Agare=%s", OwnerId));
-			} else {
-				result = select.executeQuery("SELECT * FROM Hund");
-			}
+			result = select.executeQuery("SELECT * FROM tur");
+			
 			while (result.next()) {
-				dogs.add(result.getString(2) + "," + result.getString(3) + ","
-						+ result.getInt(4));
+				
+				turer.add(new Tur(
+						result.getInt(1),
+						result.getInt(2),
+						result.getString(3),
+						result.getInt(4),
+						result.getTime(5),
+						result.getString(6),
+						result.getInt(7),
+						result.getTime(8),
+						result.getInt(9)));
+				
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
 		}
-		return dogs;
+		
+		return turer;
+	
 	}
 
 	public ArrayList<String> getUserList() {
