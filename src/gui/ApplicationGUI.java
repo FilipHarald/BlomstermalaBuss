@@ -19,6 +19,8 @@ public class ApplicationGUI extends JFrame{
 	private JButton getPaketresorButton;
 	private JButton registerButton;
 	private JTable dataTable;
+    private JPanel addBokningPanel;
+    private String currentTable = "kunder";
 	
 	
 	public ApplicationGUI(DatabaseController dbC) {
@@ -27,12 +29,23 @@ public class ApplicationGUI extends JFrame{
 		setLayout(new BorderLayout());
 		add(createTablePanel(), BorderLayout.CENTER);
 		add(createButtonPanel(), BorderLayout.SOUTH);
+        add(createTabPanel(), BorderLayout.EAST);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		pack();
 		setVisible(true);
-		
 	}
+
+    private JTabbedPane createTabPanel() {
+        JTabbedPane tabPane = new JTabbedPane();
+
+        addBokningPanel = new AddBokningPanel(this);
+
+        tabPane.addTab("Boka resa", addBokningPanel);
+        tabPane.addTab("Registrera kund", null);
+
+        return tabPane;
+    }
 
 		
 	private JPanel createButtonPanel() {
@@ -69,15 +82,25 @@ public class ApplicationGUI extends JFrame{
 		tablePanel.add(paneTable);
 		return tablePanel;
 	}
-	
+
+    public String getCurrentSelection() {
+        int row = dataTable.getSelectedRow();
+        if (row >= 0)
+            return (String)dataTable.getModel().getValueAt(row, 0);
+        else
+            return null;
+    }
+
+    public String getCurrentTable() {
+        return this.currentTable;
+    }
 	
 	
 	private class ButtonListener implements ActionListener{
 
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == getTurerButton){
-				
-				
+				currentTable = "turer";
 				
 				ArrayList<Tur> trips = dbC.getTurer();
 				DefaultTableModel tableModel = new DefaultTableModel(new String[0][0], Tur.getColumnNames());
@@ -88,6 +111,8 @@ public class ApplicationGUI extends JFrame{
 				dataTable.setModel(tableModel);
 				
 			} else if (e.getSource() == getKunderButton){
+                currentTable = "kunder";
+
 				ArrayList<Kund> kunder = dbC.getKunder();
 				DefaultTableModel tableModel = new DefaultTableModel(new String[0][0], Kund.getColumnNames());
 				
@@ -96,6 +121,8 @@ public class ApplicationGUI extends JFrame{
 				}
 				dataTable.setModel(tableModel);
 			} else if (e.getSource() == getPaketresorButton){
+                currentTable = "paketresor";
+
 				ArrayList<Paketresa> paketresor = dbC.getPaketresor();
 				DefaultTableModel tableModel = new DefaultTableModel(new String[0][0], Paketresa.getColumnNames());
 				
