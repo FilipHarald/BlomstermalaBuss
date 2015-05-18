@@ -29,7 +29,7 @@ public class Paketresa {
 	}
 
 	public static String[] getColumnNames() {
-		return new String[] { "Namn", "Tur", "Dagar frÃ¥n start" };
+		return new String[] { "Namn", "Avreseort", "Avresedag", "Resans längd (antal dagar)" };
 	}
 	
 	

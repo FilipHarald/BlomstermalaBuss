@@ -20,6 +20,7 @@ public class ApplicationGUI extends JFrame{
 	private JButton registerButton;
 	private JTable dataTable;
     private JPanel addBokningPanel;
+    private JPanel infoPanel;
     private String currentTable = "kunder";
 	
 	
@@ -29,25 +30,26 @@ public class ApplicationGUI extends JFrame{
 		setLayout(new BorderLayout());
 		add(createTablePanel(), BorderLayout.CENTER);
 		add(createButtonPanel(), BorderLayout.SOUTH);
-        add(createTabPanel(), BorderLayout.EAST);
+        add(createRightTabPanel(), BorderLayout.EAST);
+        add(infoPanel = new InfoPanel(this), BorderLayout.WEST);
+        
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		pack();
 		setVisible(true);
 	}
 
-    private JTabbedPane createTabPanel() {
+    private JTabbedPane createRightTabPanel() {
         JTabbedPane tabPane = new JTabbedPane();
 
         addBokningPanel = new AddBokningPanel(this);
-
+        
         tabPane.addTab("Boka resa", addBokningPanel);
         tabPane.addTab("Registrera kund", null);
 
         return tabPane;
     }
-
-		
+    
 	private JPanel createButtonPanel() {
 		JPanel buttonPanel = new JPanel();
 		ButtonListener listener = new ButtonListener();
@@ -123,11 +125,11 @@ public class ApplicationGUI extends JFrame{
 			} else if (e.getSource() == getPaketresorButton){
                 currentTable = "paketresor";
 
-				ArrayList<Paketresa> paketresor = dbC.getPaketresor();
+				ArrayList<String> paketresor = dbC.getPaketresorFormatted();
 				DefaultTableModel tableModel = new DefaultTableModel(new String[0][0], Paketresa.getColumnNames());
 				
-				for(Paketresa p : paketresor) {
-					tableModel.addRow(p.toString().split(","));
+				for(String p : paketresor) {
+					tableModel.addRow(p.split(","));
 				}
 				dataTable.setModel(tableModel);
 			}

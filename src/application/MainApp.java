@@ -19,7 +19,6 @@ public class MainApp {
 			input = new FileInputStream("db.properties");
 			prop.load(input);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -30,13 +29,6 @@ public class MainApp {
 				prop.getProperty("database"));
 		
 		ApplicationGUI ui = new ApplicationGUI(dbC);
-//		System.out.println(dbC.getDogs(1));
-		
-		ArrayList<Tur> turer = dbC.getTurer();
-		
-		for (Tur tur : turer) {
-			System.out.println(tur);
-		}
 	}
 	
 }
