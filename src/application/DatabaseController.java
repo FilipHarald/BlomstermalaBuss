@@ -125,7 +125,14 @@ public class DatabaseController {
 		return users;
 	}
 
-	public Paketresa getPaketresaDetails() {
+	public String getPaketresaDetails(String paketresenamn) {
+		try {
+			Statement select = con.createStatement();
+			ResultSet result;
+			result = select.executeQuery(String.format("Select * FROM paketresa WHERE namn = '%s'", paketresenamn));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return null;
 
 	}
