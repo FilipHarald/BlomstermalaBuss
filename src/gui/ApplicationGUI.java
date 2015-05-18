@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 import application.DatabaseController;
@@ -75,7 +77,6 @@ public class ApplicationGUI extends JFrame{
 	private JPanel createTablePanel() {
 		dataTable = new JTable(new String[0][0], new String[0]) {
 
-			@Override
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
@@ -83,6 +84,7 @@ public class ApplicationGUI extends JFrame{
 		};
 		JPanel tablePanel = new JPanel();
 		dataTable.setAutoCreateRowSorter(true);
+		dataTable.getModel().addTableModelListener(new TableListener());
 		JScrollPane paneTable = new JScrollPane(dataTable);
 		paneTable.setPreferredSize(new Dimension(700, 500));
 		tablePanel.add(paneTable);
@@ -137,6 +139,14 @@ public class ApplicationGUI extends JFrame{
 				}
 				dataTable.setModel(tableModel);
 			}
+			
+		}
+		
+	}
+	private class TableListener implements TableModelListener{
+		
+		public void tableChanged(TableModelEvent e) {
+			System.out.println("denna metod och print är på rad 149 i ApplicationGUI");
 			
 		}
 		
