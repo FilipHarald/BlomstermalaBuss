@@ -4,6 +4,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import com.toedter.calendar.DateUtil;
+import com.toedter.calendar.IDateEvaluator;
+import com.toedter.calendar.JDateChooser;
 
 public class AddBokningPanel extends JPanel {
 
@@ -15,6 +23,8 @@ public class AddBokningPanel extends JPanel {
     private JTextField txtKund = new JTextField();
     private JTextField txtTur = new JTextField();
     private JTextField txtDatum = new JTextField();
+
+    private JDateChooser jdcDate = new JDateChooser();
 
     private ApplicationGUI app;
 
@@ -52,7 +62,7 @@ public class AddBokningPanel extends JPanel {
 
         c.gridx = 0;
         c.gridy = 2;
-        this.add(btnGetDatum, c);
+        this.add(jdcDate, c);
 
         c.gridx = 1;
         c.gridy = 2;
@@ -67,7 +77,73 @@ public class AddBokningPanel extends JPanel {
         btnGetTur.addActionListener(listener);
         btnGetDatum.addActionListener(listener);
 
+        Date start = new Date();
+        Date end = new Date();
+        try {
+            end = new SimpleDateFormat("yyyy-MM-dd").parse("2015-12-31");
+        } catch (ParseException e1) {
+            e1.printStackTrace();
+        }
+
+        jdcDate.getJCalendar().setSelectableDateRange(start, end);
+        jdcDate.setEnabled(false);
+
     }
+
+    private class DateEvaluator implements IDateEvaluator {
+
+        private DateUtil dateUtil = new DateUtil();
+        private Calendar calendar = Calendar.getInstance();
+
+        private int dayOfWeek;
+
+        public DateEvaluator(int dayOfWeek) {
+            this.dayOfWeek = dayOfWeek;
+        }
+
+        @Override
+        public boolean isSpecial(Date date) {
+            return false;
+        }
+
+        @Override
+        public Color getSpecialForegroundColor() {
+            return Color.MAGENTA;
+        }
+
+        @Override
+        public Color getSpecialBackroundColor() {
+            return null;
+        }
+
+        @Override
+        public String getSpecialTooltip() {
+            return null;
+        }
+
+        @Override
+        public boolean isInvalid(Date date) {
+            calendar.setTime(date);
+            int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+            return (dayOfWeek != day);
+        }
+
+        @Override
+        public Color getInvalidForegroundColor() {
+            return null;
+        }
+
+        @Override
+        public Color getInvalidBackroundColor() {
+            return null;
+        }
+
+        @Override
+        public String getInvalidTooltip() {
+            return null;
+        }
+    };
 
     private class Listener implements ActionListener {
         @Override
@@ -79,6 +155,23 @@ public class AddBokningPanel extends JPanel {
                     if (id != null && id.length() > 0)
                         txtKund.setText(id);
                 }
+            } else if (e.getSource() == btnGetTur) {
+                if (app.getCurrentTable().equals("turer")) {
+                    String id = app.getCurrentSelection();
+
+                    if (id != null && id.length() > 0) {
+                        txtTur.setText(id);
+
+                        jdcDate.setEnabled(true);
+                        jdcDate.getJCalendar().getDayChooser().addDateEvaluator(new DateEvaluator(4));
+                    }
+
+                }
+
+
+
+            } else if (e.getSource() == btnGetDatum) {
+
             }
         }
     }
