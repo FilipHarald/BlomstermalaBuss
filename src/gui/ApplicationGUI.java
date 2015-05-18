@@ -13,7 +13,7 @@ import application.models.*;
 
 
 public class ApplicationGUI extends JFrame{
-	private static DatabaseController dbC;
+	private DatabaseController dbC;
 	private JButton getTurerButton;
 	private JButton getKunderButton;
 	private JButton getPaketresorButton;
@@ -38,6 +38,10 @@ public class ApplicationGUI extends JFrame{
 		pack();
 		setVisible(true);
 	}
+
+    public DatabaseController getDbc() {
+        return dbC;
+    }
 
     private JTabbedPane createRightTabPanel() {
         JTabbedPane tabPane = new JTabbedPane();

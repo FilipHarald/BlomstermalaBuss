@@ -6,9 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import application.models.Tur;
 import com.toedter.calendar.DateUtil;
 import com.toedter.calendar.IDateEvaluator;
 import com.toedter.calendar.JDateChooser;
@@ -22,7 +24,8 @@ public class AddBokningPanel extends JPanel {
 
     private JTextField txtKund = new JTextField();
     private JTextField txtTur = new JTextField();
-    private JTextField txtDatum = new JTextField();
+
+    private JLabel lblDate = new JLabel("Datum:", JLabel.RIGHT);
 
     private JDateChooser jdcDate = new JDateChooser();
 
@@ -38,7 +41,6 @@ public class AddBokningPanel extends JPanel {
         Dimension txtSize= new Dimension(100, 20);
         txtKund.setPreferredSize(txtSize);
         txtTur.setPreferredSize(txtSize);
-        txtDatum.setPreferredSize(txtSize);
 
         c.anchor = GridBagConstraints.NORTH;
         c.insets = new Insets(5,5,5,5);
@@ -62,11 +64,11 @@ public class AddBokningPanel extends JPanel {
 
         c.gridx = 0;
         c.gridy = 2;
-        this.add(jdcDate, c);
+        this.add(lblDate, c);
 
         c.gridx = 1;
         c.gridy = 2;
-        this.add(txtDatum, c);
+        this.add(jdcDate, c);
 
         c.gridx = 1;
         c.gridy = 3;
@@ -76,6 +78,7 @@ public class AddBokningPanel extends JPanel {
         btnGetKund.addActionListener(listener);
         btnGetTur.addActionListener(listener);
         btnGetDatum.addActionListener(listener);
+        btnBoka.addActionListener(listener);
 
         Date start = new Date();
         Date end = new Date();
@@ -162,8 +165,12 @@ public class AddBokningPanel extends JPanel {
                     if (id != null && id.length() > 0) {
                         txtTur.setText(id);
 
+                        int turId = Integer.parseInt(id);
+
+                        Tur tur = app.getDbc().getTur(turId);
+
                         jdcDate.setEnabled(true);
-                        jdcDate.getJCalendar().getDayChooser().addDateEvaluator(new DateEvaluator(4));
+                        jdcDate.getJCalendar().getDayChooser().addDateEvaluator(new DateEvaluator(tur.getAvresedag()));
                     }
 
                 }
@@ -172,6 +179,16 @@ public class AddBokningPanel extends JPanel {
 
             } else if (e.getSource() == btnGetDatum) {
 
+            } else if (e.getSource() == btnBoka) {
+                int turId = Integer.parseInt(txtTur.getText());
+
+                ArrayList<Integer> turer = new ArrayList<Integer>();
+
+                turer.add(turId);
+
+
+
+                app.getDbc().addTurBokning(txtKund.getText(), jdcDate.getDate(), turId);
             }
         }
     }

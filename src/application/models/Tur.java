@@ -29,7 +29,7 @@ public class Tur {
 		this.kapacitet = kapacitet;
 	}
 
-	int getId() {
+    public int getId() {
 		return id;
 	}
 	public int getKostnad() {
