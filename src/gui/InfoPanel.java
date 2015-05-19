@@ -17,7 +17,7 @@ public class InfoPanel extends JPanel{
 	public InfoPanel(ApplicationGUI applicationGUI) {
 		super();
 		setBorder(BorderFactory.createTitledBorder("Detailed information"));
-		setPreferredSize(new Dimension(200,300));
+		setPreferredSize(new Dimension(300,300));
 		setLayout(new GridLayout(0,1));
 		appGUI = applicationGUI;
 		ta = new JTextArea();
@@ -26,6 +26,8 @@ public class InfoPanel extends JPanel{
 	}
 
 	public void setText(String s) {
-		ta.setText(s);
+		ta.setText("");
+		ta.append(s);
+
 	}
 }

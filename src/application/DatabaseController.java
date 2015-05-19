@@ -246,7 +246,7 @@ public class DatabaseController {
 	}
 
 	public String getPaketresaDetails(String paketresenamn) {
-		String s = "";
+		String s = paketresenamn + "\n";
 		try {
 			Statement stmt = con.createStatement();
 			ResultSet rs;
@@ -254,20 +254,23 @@ public class DatabaseController {
 					"SELECT sum(tur.kostnad) "
 							+ "FROM tur INNER JOIN paketresa "
 							+ "ON tur.id = paketresa.tur "
-							+ "WHERE paketresa.namn = %s", paketresenamn));
-			s = "Pris totalt:" + rs.getInt(1);
+							+ "WHERE paketresa.namn = '%s'", paketresenamn));
+			rs.next();
+			s = s + "Pris totalt: " + rs.getInt(1) + "\n";
 			Statement statement = con.createStatement();
 			ResultSet result;
 			result = statement
 					.executeQuery(String
-							.format("SELECT tur.avreseort,tur.avresedag,tur.avresetid,tur.ankomsstort,tur.ankomstdag,tur.ankomsttid "
+							.format("SELECT tur.avreseort,tur.avresedag,tur.avresetid,tur.ankomstort,tur.ankomstdag,tur.ankomsttid "
 									+ "FROM tur INNER JOIN paketresa "
 									+ "ON tur.id = paketresa.tur "
 									+ "WHERE paketresa.namn = '%s'",
 									paketresenamn));
-			s = s + "," + result.getString(1) + "," + result.getString(2) + ","
-					+ result.getString(3) + "," + result.getString(4) + ","
-					+ result.getString(5) + "," + result.getString(6);
+			while (result.next()) {
+				s = s + result.getString(1) + "," + result.getString(2)
+						+ "," + result.getString(3) + "," + result.getString(4)
+						+ "," + result.getString(5) + "," + result.getString(6) + "\n";
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

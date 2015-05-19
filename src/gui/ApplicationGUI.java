@@ -20,9 +20,10 @@ public class ApplicationGUI extends JFrame{
 	private JButton getKunderButton;
 	private JButton getPaketresorButton;
 	private JButton registerButton;
+	private JButton showDetailsButton;
 	private JTable dataTable;
     private JPanel addBokningPanel;
-    private JPanel infoPanel;
+    private InfoPanel infoPanel;
     private String currentTable = "kunder";
 	
 	
@@ -84,7 +85,8 @@ public class ApplicationGUI extends JFrame{
 		};
 		JPanel tablePanel = new JPanel();
 		dataTable.setAutoCreateRowSorter(true);
-		dataTable.getModel().addTableModelListener(new TableListener());
+		tablePanel.add(showDetailsButton = new JButton("<--Visa detaljer<--"));
+		showDetailsButton.addActionListener(new ButtonListener());
 		JScrollPane paneTable = new JScrollPane(dataTable);
 		paneTable.setPreferredSize(new Dimension(700, 500));
 		tablePanel.add(paneTable);
@@ -138,18 +140,20 @@ public class ApplicationGUI extends JFrame{
 					tableModel.addRow(p.split(","));
 				}
 				dataTable.setModel(tableModel);
+			} else if (e.getSource() == showDetailsButton){
+				 infoPanel.setText(dbC.getPaketresaDetails(getCurrentSelection()));
 			}
 			
 		}
 		
 	}
-	private class TableListener implements TableModelListener{
-		
-		public void tableChanged(TableModelEvent e) {
-			System.out.println("denna metod och print är på rad 149 i ApplicationGUI");
-			
-		}
-		
-	}
+//	private class TableListener implements TableModelListener{
+//		
+//		public void tableChanged(TableModelEvent e) {
+//			System.out.println("denna metod och print är på rad 149 i ApplicationGUI");
+//			
+//		}
+//		
+//	}
 	
 }
