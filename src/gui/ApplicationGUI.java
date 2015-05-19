@@ -146,7 +146,7 @@ public class ApplicationGUI extends JFrame{
 	private class TableListener implements TableModelListener{
 		
 		public void tableChanged(TableModelEvent e) {
-			System.out.println("denna metod och print är på rad 149 i ApplicationGUI");
+			System.out.println("denna metod och print Ã¤r pÃ¥ rad 149 i ApplicationGUI");
 			
 		}
 		

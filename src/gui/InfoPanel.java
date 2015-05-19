@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import javax.swing.*;
@@ -16,6 +17,7 @@ public class InfoPanel extends JPanel{
 	public InfoPanel(ApplicationGUI applicationGUI) {
 		super();
 		setBorder(BorderFactory.createTitledBorder("Detailed information"));
+		setPreferredSize(new Dimension(200,300));
 		setLayout(new GridLayout(0,1));
 		appGUI = applicationGUI;
 		ta = new JTextArea();
