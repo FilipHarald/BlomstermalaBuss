@@ -105,8 +105,10 @@ public class DatabaseController {
 
 	}
 
-	public void addKund(Kund kund) {
-		throw new RuntimeException("Not implemented yet!");
+	public void addKund(String socialNumber, String name, String tel, String mail,
+			String password, String address) {
+		
+		
 	}
 
 	public Bokning addPaketBokning(String kund, Date datum,
