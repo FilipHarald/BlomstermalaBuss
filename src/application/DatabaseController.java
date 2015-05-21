@@ -107,7 +107,20 @@ public class DatabaseController {
 
 	public void addKund(String socialNumber, String name, String tel, String mail,
 			String password, String address) {
+		String insertKund = "insert into kund (personnummer, namn, telefonnummer, mail, losenord, adress) values (?, ?, ?, ?, ?, ?)";
 		
+		try {
+			PreparedStatement insert = con.prepareStatement(
+					insertKund, Statement.RETURN_GENERATED_KEYS);
+			insert.setString(1, socialNumber);
+			insert.setString(2, name);
+			insert.setString(3, tel);
+			insert.setString(4, mail);
+			insert.setString(5, password);
+			insert.setString(6, address);
+		} catch (SQLException e){
+			e.printStackTrace();
+		}
 		
 	}
 
