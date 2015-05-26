@@ -107,7 +107,7 @@ public class DatabaseController {
 
 	public void addKund(String socialNumber, String name, String tel, String mail,
 			String password, String address) {
-		String insertKund = "insert into kund (personnummer, namn, telefonnummer, mail, losenord, adress) values (?, ?, ?, ?, ?, ?)";
+		String insertKund = "insert into kund (personnr, namn, telefonnr, mail, losenord, adress) values (?, ?, ?, ?, ?, ?)";
 		
 		try {
 			PreparedStatement insert = con.prepareStatement(
