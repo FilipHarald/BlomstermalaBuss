@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import application.models.Paketresa;
 import application.models.Tur;
 import com.toedter.calendar.DateUtil;
 import com.toedter.calendar.IDateEvaluator;
@@ -28,6 +29,9 @@ public class AddBokningPanel extends JPanel {
     private JLabel lblDate = new JLabel("Datum:", JLabel.RIGHT);
 
     private JDateChooser jdcDate = new JDateChooser();
+
+    private ArrayList<Integer> turer = new ArrayList<Integer>();
+    private boolean isPaketBokning = false;
 
     private ApplicationGUI app;
 
@@ -160,6 +164,9 @@ public class AddBokningPanel extends JPanel {
                 }
             } else if (e.getSource() == btnGetTur) {
                 if (app.getCurrentTable().equals("turer")) {
+                    isPaketBokning = false;
+                    turer.clear();
+
                     String id = app.getCurrentSelection();
 
                     if (id != null && id.length() > 0) {
@@ -171,24 +178,42 @@ public class AddBokningPanel extends JPanel {
 
                         jdcDate.setEnabled(true);
                         jdcDate.getJCalendar().getDayChooser().addDateEvaluator(new DateEvaluator(tur.getAvresedag()));
+
+                        turer.add(tur.getId());
                     }
 
+                } else if (app.getCurrentTable().equals("paketresor")) {
+                    isPaketBokning = true;
+                    String id = app.getCurrentSelection();
+                    turer.clear();
+
+                    if (id != null && id.length() > 0) {
+                        txtTur.setText(id);
+
+                        int turId = Integer.parseInt(id);
+
+                        ArrayList<Paketresa> paketresa_turer = app.getDbc().getPaketresaTurer(id);
+
+                        Tur first = app.getDbc().getTur(paketresa_turer.get(0).getTur());
+
+                        jdcDate.setEnabled(true);
+                        jdcDate.getJCalendar().getDayChooser().addDateEvaluator(new DateEvaluator(first.getAvresedag()));
+
+                        for (Paketresa tur : paketresa_turer) {
+                            turer.add(tur.getTur());
+                        }
+                    }
                 }
 
-
-
-            } else if (e.getSource() == btnGetDatum) {
-
             } else if (e.getSource() == btnBoka) {
-                int turId = Integer.parseInt(txtTur.getText());
 
-                ArrayList<Integer> turer = new ArrayList<Integer>();
+                if (isPaketBokning) {
+                    app.getDbc().addPaketBokning(txtKund.getText(), jdcDate.getDate(), txtTur.getText());
+                } else {
+                    int turId = Integer.parseInt(txtTur.getText());
 
-                turer.add(turId);
-
-
-
-                app.getDbc().addTurBokning(txtKund.getText(), jdcDate.getDate(), turId);
+                    app.getDbc().addTurBokning(txtKund.getText(), jdcDate.getDate(), turId);
+                }
             }
         }
     }

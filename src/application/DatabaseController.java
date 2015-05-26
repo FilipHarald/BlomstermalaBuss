@@ -124,9 +124,10 @@ public class DatabaseController {
 		
 	}
 
-	public Bokning addPaketBokning(String kund, Date datum,
-			ArrayList<Integer> turer) {
+	public int addPaketBokning(String kund, Date datum,
+			String paketresaId) {
 
+        int bokningId = -1;
 		int bokadResaId = -1;
 
 		String insertBokadResa = "INSERT INTO bokad_resa (bokning, tur, datum) VALUES (?, ?, ?)";
@@ -135,19 +136,21 @@ public class DatabaseController {
 		java.sql.Date startDatum = new java.sql.Date(datum.getTime());
 
 		try {
-			int bokningId = addBokning(kund, bokningsDatum);
+            bokningId = addBokning(kund);
 
 			Calendar calendar = Calendar.getInstance();
 
+            ArrayList<Paketresa> paketresaTurer = getPaketresaTurer(paketresaId);
+
 			int dagarSedanStart = 0;
 
-			for (int i = 0; i < turer.size(); i++) {
-				Tur tur = getTur(turer.get(i));
+			for (int i = 0; i < paketresaTurer.size(); i++) {
+				Paketresa tur = paketresaTurer.get(i);
 
 				PreparedStatement insert = con.prepareStatement(
 						insertBokadResa, Statement.RETURN_GENERATED_KEYS);
 				insert.setInt(1, bokningId);
-				insert.setInt(2, tur.getId());
+				insert.setInt(2, tur.getTur());
 
 				if (i == 0) {
 					// If it's the first tur, we don't have to calculate
@@ -155,20 +158,42 @@ public class DatabaseController {
 					insert.setDate(3, startDatum);
 				} else {
 					// Here we have to calculate the days from previous
-					// ankomstdag to current avresedag
+					// avresedag, to current avresedag
+
+                    calendar.setTime(datum);
+                    calendar.add(Calendar.DATE, tur.getDagarFranStart());
+
+                    java.sql.Date avreseDatum = new java.sql.Date(calendar.getTime().getTime());
+
+                    insert.setDate(3, avreseDatum);
 
 				}
 
-				dagarSedanStart += tur.getAnkomstdag() - tur.getAvresedag();
+                int affectedRows = insert.executeUpdate();
+
+                if (affectedRows == 0) {
+                    throw new SQLException("No rows affected!");
+                }
+
+                try (ResultSet keys = insert.getGeneratedKeys()) {
+                    if (keys.next()) {
+                        bokningId = keys.getInt(1);
+                    } else {
+                        throw new SQLException("Insert failed!");
+                    }
+                }
+
+                System.out.println(affectedRows);
+
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
 
-		return null;
+		return bokningId;
 	}
 
-	private int addBokning(String kund, Date datum) {
+	public int addBokning(String kund) {
 		int bokningId = -1;
 
 		String insertBokning = "INSERT INTO bokning (kund, datum) VALUES (?, ?)";
@@ -202,9 +227,9 @@ public class DatabaseController {
 		return bokningId;
 	}
 
-	public int addTurBokning(String kund, Date datum, int tur) {
+	public int addTurBokning(String kund, Date datum, int turId) {
 
-		int bokningId = -1;
+        int bokningId = -1;
 		int bokadResaId = -1;
 
 		String insertBokning = "INSERT INTO bokning (kund, datum) VALUES (?, ?)";
@@ -214,11 +239,11 @@ public class DatabaseController {
 		java.sql.Date startDatum = new java.sql.Date(datum.getTime());
 
 		try {
-			bokningId = addBokning(kund, datum);
+            bokningId = addBokning(kund);
 
 			PreparedStatement insert = con.prepareStatement(insertBokadResa);
 			insert.setInt(1, bokningId);
-			insert.setInt(2, tur);
+			insert.setInt(2, turId);
 			insert.setDate(3, startDatum);
 
 			int affectedRows = insert.executeUpdate();
@@ -292,6 +317,28 @@ public class DatabaseController {
 		return s;
 
 	}
+
+    public ArrayList<Paketresa> getPaketresaTurer(String id) {
+        ArrayList<Paketresa> turer = new ArrayList<Paketresa>();
+
+        try {
+            PreparedStatement select = con.prepareStatement("SELECT paketresa.* "
+                    + "FROM paketresa "
+                    + "WHERE paketresa.namn = ? "
+                    + "ORDER BY paketresa.dagar_fran_start ASC");
+            select.setString(1, id);
+            ResultSet result;
+            result = select.executeQuery();
+            while (result.next()) {
+                turer.add(new Paketresa(result.getString(1), result.getInt(2),
+                        result.getInt(3)));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return turer;
+    }
 
 	public ArrayList<String> getPaketresorFormatted() {
 		ArrayList<String> paketresor = new ArrayList<String>();

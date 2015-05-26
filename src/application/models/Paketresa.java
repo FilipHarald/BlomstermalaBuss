@@ -19,7 +19,7 @@ public class Paketresa {
 	public int getTur() {
 		return tur;
 	}
-	public int getDagar_fran_start() {
+	public int getDagarFranStart() {
 		return dagar_fran_start;
 	}
 	
