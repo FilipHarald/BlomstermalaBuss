@@ -127,6 +127,22 @@ public class DatabaseController {
 
 	public int addPaketBokning(String kund, Date datum,
 			String paketresaId) {
+		
+		Calendar calendar = Calendar.getInstance();
+		java.sql.Date startDatum = new java.sql.Date(datum.getTime());
+		
+		ArrayList<Paketresa> paketresaTurer = getPaketresaTurer(paketresaId);
+		
+		for (Paketresa paketTur : paketresaTurer) {
+			calendar.setTime(datum);
+            calendar.add(Calendar.DATE, paketTur.getDagarFranStart());
+
+            java.sql.Date avreseDatum = new java.sql.Date(calendar.getTime().getTime());
+            
+			if (turIsFull(paketTur.getTur(), avreseDatum)) {
+				return -1;
+			}
+		}
 
         int bokningId = -1;
 		int bokadResaId = -1;
@@ -134,14 +150,14 @@ public class DatabaseController {
 		String insertBokadResa = "INSERT INTO bokad_resa (bokning, tur, datum) VALUES (?, ?, ?)";
 
 		java.sql.Date bokningsDatum = new java.sql.Date(new Date().getTime());
-		java.sql.Date startDatum = new java.sql.Date(datum.getTime());
+		
 
 		try {
             bokningId = addBokning(kund);
 
-			Calendar calendar = Calendar.getInstance();
+			
 
-            ArrayList<Paketresa> paketresaTurer = getPaketresaTurer(paketresaId);
+            
 
 			int dagarSedanStart = 0;
 
@@ -229,6 +245,11 @@ public class DatabaseController {
 	}
 
 	public int addTurBokning(String kund, Date datum, int turId) {
+		java.sql.Date startDatum = new java.sql.Date(datum.getTime());
+		
+		if (turIsFull(turId, startDatum)) {
+			return -1;
+		}
 
         int bokningId = -1;
 		int bokadResaId = -1;
@@ -237,7 +258,7 @@ public class DatabaseController {
 		String insertBokadResa = "INSERT INTO bokad_resa (bokning, tur, datum) VALUES (?, ?, ?)";
 
 		java.sql.Date bokningsDatum = new java.sql.Date(new Date().getTime());
-		java.sql.Date startDatum = new java.sql.Date(datum.getTime());
+		
 
 		try {
             bokningId = addBokning(kund);
@@ -260,6 +281,28 @@ public class DatabaseController {
 		}
 
 		return bokningId;
+	}
+
+	private boolean turIsFull(int turId, java.sql.Date datum) {
+		Tur tur = getTur(turId);
+		
+		try {
+			PreparedStatement select = con.prepareStatement("SELECT COUNT(*) FROM bokad_resa WHERE tur = ? AND datum = ?");
+			select.setInt(1, turId);
+			select.setDate(2, datum);
+			
+			ResultSet result = select.executeQuery();
+			
+			if (result.next()) {
+				if (result.getInt(1) <= tur.getKapacitet()) {
+					return true;
+				}
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		
+		return false;
 	}
 
 	public ArrayList<String> getUserList() {
