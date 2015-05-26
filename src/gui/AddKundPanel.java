@@ -31,13 +31,14 @@ public class AddKundPanel extends JPanel implements ActionListener{
 	
 	private ApplicationGUI app;
 	
-	public AddKundPanel () {
+	public AddKundPanel (ApplicationGUI app) {
 		setLayout(new BorderLayout());
-		this.setPreferredSize(new Dimension(500,400));
+//		this.setPreferredSize(new Dimension(500,400));
 		kundPanelTextFields();
 		kundPanelLabels();
 		addButtonPanel();
 		btnSaveCustomer.addActionListener(this);
+		this.app = app;
 	}
 	
 	public void kundPanelTextFields (){

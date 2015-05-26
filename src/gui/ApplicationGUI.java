@@ -19,10 +19,10 @@ public class ApplicationGUI extends JFrame{
 	private JButton getTurerButton;
 	private JButton getKunderButton;
 	private JButton getPaketresorButton;
-	private JButton registerButton;
 	private JButton showDetailsButton;
 	private JTable dataTable;
     private JPanel addBokningPanel;
+    private JPanel addKundPanel;
     private InfoPanel infoPanel;
     private String currentTable = "kunder";
 	
@@ -50,9 +50,10 @@ public class ApplicationGUI extends JFrame{
         JTabbedPane tabPane = new JTabbedPane();
 
         addBokningPanel = new AddBokningPanel(this);
+        addKundPanel = new AddKundPanel(this);
         
         tabPane.addTab("Boka resa", addBokningPanel);
-        tabPane.addTab("Registrera kund", null);
+        tabPane.addTab("Registrera kund", addKundPanel);
 
         return tabPane;
     }
@@ -62,7 +63,6 @@ public class ApplicationGUI extends JFrame{
 		ButtonListener listener = new ButtonListener();
 		getTurerButton = new JButton("Visa turer");
 		getKunderButton = new JButton("Visa kunder");
-		registerButton = new JButton("Registrera användare");
 		getTurerButton.addActionListener(listener);
 		getKunderButton.addActionListener(listener);
 		getPaketresorButton = new JButton("Visa paketresor");
@@ -70,7 +70,6 @@ public class ApplicationGUI extends JFrame{
 		buttonPanel.add(getTurerButton);
 		buttonPanel.add(getKunderButton);
 		buttonPanel.add(getPaketresorButton);
-		buttonPanel.add(registerButton);
 		
 		return buttonPanel;
 	}
