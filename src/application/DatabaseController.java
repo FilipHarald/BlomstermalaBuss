@@ -118,6 +118,7 @@ public class DatabaseController {
 			insert.setString(4, mail);
 			insert.setString(5, password);
 			insert.setString(6, address);
+			insert.executeUpdate();
 		} catch (SQLException e){
 			e.printStackTrace();
 		}
