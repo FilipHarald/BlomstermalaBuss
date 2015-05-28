@@ -20,6 +20,7 @@ public class ApplicationGUI extends JFrame{
 	private JButton getKunderButton;
 	private JButton getPaketresorButton;
 	private JButton showDetailsButton;
+	private JButton getBokningarButton;
 	private JTable dataTable;
     private JPanel addBokningPanel;
     private JPanel addKundPanel;
@@ -63,11 +64,14 @@ public class ApplicationGUI extends JFrame{
 		ButtonListener listener = new ButtonListener();
 		getTurerButton = new JButton("Visa turer");
 		getKunderButton = new JButton("Visa kunder");
+		getBokningarButton = new JButton("Visa bokningar");
+		getBokningarButton.addActionListener(listener);
 		getTurerButton.addActionListener(listener);
 		getKunderButton.addActionListener(listener);
 		getPaketresorButton = new JButton("Visa paketresor");
 		getPaketresorButton.addActionListener(listener);
 		buttonPanel.add(getTurerButton);
+		buttonPanel.add(getBokningarButton);
 		buttonPanel.add(getKunderButton);
 		buttonPanel.add(getPaketresorButton);
 		
@@ -120,6 +124,16 @@ public class ApplicationGUI extends JFrame{
 				}
 				dataTable.setModel(tableModel);
 				
+			} else if (e.getSource() == getBokningarButton){
+				currentTable = "bokningar";
+				
+				ArrayList<Bokning> bookings = dbC.getBokningar();
+				DefaultTableModel tableModel = new DefaultTableModel(new String[0][0], Bokning.getColumnNames());
+				
+				for(Bokning b : bookings) {
+					tableModel.addRow(b.toString().split(","));
+				}
+				dataTable.setModel(tableModel);
 			} else if (e.getSource() == getKunderButton){
                 currentTable = "kunder";
 

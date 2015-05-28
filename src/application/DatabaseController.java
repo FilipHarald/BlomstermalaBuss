@@ -82,6 +82,23 @@ public class DatabaseController {
 		return null;
 	}
 
+	public ArrayList<Bokning> getBokningar() {
+		ArrayList<Bokning> bokningar= new ArrayList<Bokning>();
+		try {
+			Statement select = con.createStatement();
+			ResultSet result;
+			result = select.executeQuery("SELECT * FROM bokning");
+
+			while (result.next()) {
+				bokningar.add(new Bokning(result.getInt(1), result.getString(2), result.getDate(3)));
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+
+		return bokningar;
+
+	}
 	public ArrayList<Kund> getKunder() {
 		ArrayList<Kund> kunder = new ArrayList<Kund>();
 
@@ -410,4 +427,5 @@ public class DatabaseController {
 
 		return paketresor;
 	}
+
 }

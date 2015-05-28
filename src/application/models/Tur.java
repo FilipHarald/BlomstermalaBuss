@@ -72,10 +72,37 @@ public class Tur {
 	@Override
 	public String toString() {
 		return id + "," + kostnad + ","
-				+ avreseort + "," + avresedag + ","
+				+ avreseort + "," + intToDay(avresedag) + ","
 				+ avresetid + "," + ankomstort + ","
-				+ ankomstdag + "," + ankomsttid + ","
+				+ intToDay(ankomstdag) + "," + ankomsttid + ","
 				+ kapacitet;
 	}
-
+	public String intToDay(int i){
+		String day = "";
+		switch(i){
+			case 1: 
+				day = "Måndag";
+				break;
+			case 2: 
+				day = "Tisdag";
+				break;
+			case 3: 
+				day = "Onsdag";
+				break;
+			case 4: 
+				day = "Torsdag";
+				break;
+			case 5: 
+				day = "Fredag";
+				break;
+			case 6: 
+				day = "Lördag";
+				break;
+			case 7: 
+				day = "Söndag";
+				break;
+		}
+		return day;
+	}
+	
 }

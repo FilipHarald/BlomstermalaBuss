@@ -1,6 +1,7 @@
 package gui;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,9 +10,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import application.models.Paketresa;
 import application.models.Tur;
+
 import com.toedter.calendar.DateUtil;
 import com.toedter.calendar.IDateEvaluator;
 import com.toedter.calendar.JDateChooser;
@@ -92,7 +95,7 @@ public class AddBokningPanel extends JPanel {
         } catch (ParseException e1) {
             e1.printStackTrace();
         }
-
+        jdcDate.setLocale(new Locale("sv", "SWE"));
         jdcDate.getJCalendar().setSelectableDateRange(start, end);
         jdcDate.setEnabled(false);
 
@@ -106,6 +109,7 @@ public class AddBokningPanel extends JPanel {
         private int dayOfWeek;
 
         public DateEvaluator(int dayOfWeek) {
+        	calendar.setFirstDayOfWeek(Calendar.MONDAY);
             this.dayOfWeek = dayOfWeek;
         }
 
@@ -180,7 +184,7 @@ public class AddBokningPanel extends JPanel {
                         jdcDate.setEnabled(true);
                         if (currentEvaluator != null) 
                         	jdcDate.getJCalendar().getDayChooser().removeDateEvaluator(currentEvaluator);
-                        currentEvaluator = new DateEvaluator(tur.getAvresedag());
+                        currentEvaluator = new DateEvaluator(tur.getAvresedag()+1);
                         jdcDate.getJCalendar().getDayChooser().addDateEvaluator(currentEvaluator);
 
                         turer.add(tur.getId());
@@ -221,15 +225,6 @@ public class AddBokningPanel extends JPanel {
                 }
             }
         }
-    }
-
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(new AddBokningPanel(null));
-        frame.pack();
-        frame.setVisible(true);
     }
 
 }

@@ -32,5 +32,13 @@ public class Bokning {
 		return String.format("%s, %s, %s", id, kund, datum);
 	}
 	
+	public static Object[] getColumnNames() {
+		return new String[] {
+				"ID",
+				"Personnr på kund",
+				"Datum bokning gjordes"
+		};
+	}
+	
 	
 }
