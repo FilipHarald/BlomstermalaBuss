@@ -294,13 +294,18 @@ public class DatabaseController {
 			ResultSet result = select.executeQuery();
 			
 			if (result.next()) {
-				if (result.getInt(1) <= tur.getKapacitet()) {
+				System.out.println("ASD");
+				System.out.println(tur.getKapacitet());
+				
+				if (result.getInt(1) >= tur.getKapacitet()) {
 					return true;
 				}
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
+		
+		System.out.println("ZXCZXC");
 		
 		return false;
 	}

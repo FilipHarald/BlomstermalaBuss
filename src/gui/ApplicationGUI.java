@@ -94,9 +94,10 @@ public class ApplicationGUI extends JFrame{
 
     public String getCurrentSelection() {
         int row = dataTable.getSelectedRow();
-        if (row >= 0)
+        row = dataTable.convertRowIndexToModel(row);
+        if (row >= 0){
             return (String)dataTable.getModel().getValueAt(row, 0);
-        else
+        } else
             return null;
     }
 

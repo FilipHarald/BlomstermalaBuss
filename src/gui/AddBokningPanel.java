@@ -29,6 +29,7 @@ public class AddBokningPanel extends JPanel {
     private JLabel lblDate = new JLabel("Datum:", JLabel.RIGHT);
 
     private JDateChooser jdcDate = new JDateChooser();
+    private IDateEvaluator currentEvaluator;
 
     private ArrayList<Integer> turer = new ArrayList<Integer>();
     private boolean isPaketBokning = false;
@@ -177,7 +178,10 @@ public class AddBokningPanel extends JPanel {
                         Tur tur = app.getDbc().getTur(turId);
 
                         jdcDate.setEnabled(true);
-                        jdcDate.getJCalendar().getDayChooser().addDateEvaluator(new DateEvaluator(tur.getAvresedag()));
+                        if (currentEvaluator != null) 
+                        	jdcDate.getJCalendar().getDayChooser().removeDateEvaluator(currentEvaluator);
+                        currentEvaluator = new DateEvaluator(tur.getAvresedag());
+                        jdcDate.getJCalendar().getDayChooser().addDateEvaluator(currentEvaluator);
 
                         turer.add(tur.getId());
                     }
@@ -190,14 +194,15 @@ public class AddBokningPanel extends JPanel {
                     if (id != null && id.length() > 0) {
                         txtTur.setText(id);
 
-                        int turId = Integer.parseInt(id);
-
                         ArrayList<Paketresa> paketresa_turer = app.getDbc().getPaketresaTurer(id);
 
                         Tur first = app.getDbc().getTur(paketresa_turer.get(0).getTur());
 
                         jdcDate.setEnabled(true);
-                        jdcDate.getJCalendar().getDayChooser().addDateEvaluator(new DateEvaluator(first.getAvresedag()));
+                        if (currentEvaluator != null) 
+                        	jdcDate.getJCalendar().getDayChooser().removeDateEvaluator(currentEvaluator);
+                        currentEvaluator = new DateEvaluator(first.getAvresedag());
+                        jdcDate.getJCalendar().getDayChooser().addDateEvaluator(currentEvaluator);
 
                         for (Paketresa tur : paketresa_turer) {
                             turer.add(tur.getTur());
