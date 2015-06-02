@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.ArrayList;
 
 import application.models.*;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 public class DatabaseController {
 	private String url;
@@ -142,7 +143,7 @@ public class DatabaseController {
 		
 	}
 
-	public int addPaketBokning(String kund, Date datum,
+	public String addPaketBokning(String kund, Date datum,
 			String paketresaId) {
 		
 		Calendar calendar = Calendar.getInstance();
@@ -157,7 +158,7 @@ public class DatabaseController {
             java.sql.Date avreseDatum = new java.sql.Date(calendar.getTime().getTime());
             
 			if (turIsFull(paketTur.getTur(), avreseDatum)) {
-				return -1;
+				return "TUR HAR INGA LEDIGA PLATSER";
 			}
 		}
 
@@ -171,10 +172,6 @@ public class DatabaseController {
 
 		try {
             bokningId = addBokning(kund);
-
-			
-
-            
 
 			int dagarSedanStart = 0;
 
@@ -224,7 +221,7 @@ public class DatabaseController {
 			ex.printStackTrace();
 		}
 
-		return bokningId;
+		return "BOKNING GENOMFÖRD";
 	}
 
 	public int addBokning(String kund) {
@@ -261,11 +258,11 @@ public class DatabaseController {
 		return bokningId;
 	}
 
-	public int addTurBokning(String kund, Date datum, int turId) {
+	public String addTurBokning(String kund, Date datum, int turId) {
 		java.sql.Date startDatum = new java.sql.Date(datum.getTime());
 		
 		if (turIsFull(turId, startDatum)) {
-			return -1;
+			return "TUR HAR INGA LEDIGA PLATSER";
 		}
 
         int bokningId = -1;
@@ -297,7 +294,7 @@ public class DatabaseController {
 			ex.printStackTrace();
 		}
 
-		return bokningId;
+		return "BOKNING OK";
 	}
 
 	private boolean turIsFull(int turId, java.sql.Date datum) {
@@ -384,6 +381,30 @@ public class DatabaseController {
 
 	}
 
+    public String getBokningDetails(int id) {
+        String details = "";
+        try {
+            PreparedStatement select = con.prepareStatement("SELECT bokning.id, bokning.datum, bokad_resa.datum, kund.namn, tur.avreseort, tur.ankomstort " +
+                    "FROM bokning " +
+                    "INNER JOIN kund ON bokning.kund=kund.personnr " +
+                    "INNER JOIN bokad_resa ON bokning.id=bokad_resa.bokning " +
+                    "INNER JOIN tur ON bokad_resa.tur=tur.id " +
+                    "WHERE bokning.id = ?");
+            select.setInt(1, id);
+            ResultSet result;
+            result = select.executeQuery();
+
+            result.next();
+
+            details = String.format("ID: %d\nDATUM: %s\nAVGÅNG: %s\nKUND: %s\nAVRESEORT: %s\nANKOMSTORT: %s", result.getInt(1), result.getString(2), result.getString(3),result.getString(4), result.getString(5), result.getString(6));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return details;
+    }
+
     public ArrayList<Paketresa> getPaketresaTurer(String id) {
         ArrayList<Paketresa> turer = new ArrayList<Paketresa>();
 
@@ -428,4 +449,78 @@ public class DatabaseController {
 		return paketresor;
 	}
 
+
+    public String removeTur(int id) {
+        try {
+            PreparedStatement delete = con.prepareStatement("DELETE FROM tur WHERE id = ?");
+            delete.setInt(1, id);
+
+            int affectedRows = delete.executeUpdate();
+
+            if (affectedRows > 0) {
+                return "OK";
+            }
+
+        } catch (MySQLIntegrityConstraintViolationException ex) {
+            return "TUR ANVÄNDS I EN PAKETRESA ELLER BOKNING";
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return "ERROR";
+    }
+
+    public String removeBokning(int id) {
+        try {
+            PreparedStatement delete = con.prepareStatement("DELETE FROM bokning WHERE id = ?");
+            delete.setInt(1, id);
+
+            int affectedRows = delete.executeUpdate();
+
+            if (affectedRows > 0) {
+                return "OK";
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return "ERROR";
+    }
+
+    public String removePaketresa(String id) {
+        try {
+            PreparedStatement delete = con.prepareStatement("DELETE FROM paketresa WHERE namn = ?");
+            delete.setString(1, id);
+
+            int affectedRows = delete.executeUpdate();
+
+            if (affectedRows > 0) {
+                return "OK";
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return "ERROR";
+    }
+
+    public String removeKund(String id) {
+        try {
+            PreparedStatement delete = con.prepareStatement("DELETE FROM kund WHERE personnr = ?");
+            delete.setString(1, id);
+
+            int affectedRows = delete.executeUpdate();
+
+            if (affectedRows > 0) {
+                return "OK";
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return "ERROR";
+    }
 }

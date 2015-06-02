@@ -215,14 +215,17 @@ public class AddBokningPanel extends JPanel {
                 }
 
             } else if (e.getSource() == btnBoka) {
-
+                String result = "";
                 if (isPaketBokning) {
-                    app.getDbc().addPaketBokning(txtKund.getText(), jdcDate.getDate(), txtTur.getText());
+                    result = app.getDbc().addPaketBokning(txtKund.getText(), jdcDate.getDate(), txtTur.getText());
                 } else {
                     int turId = Integer.parseInt(txtTur.getText());
 
-                    app.getDbc().addTurBokning(txtKund.getText(), jdcDate.getDate(), turId);
+                    result = app.getDbc().addTurBokning(txtKund.getText(), jdcDate.getDate(), turId);
+
+
                 }
+                app.setInfo(result);
             }
         }
     }

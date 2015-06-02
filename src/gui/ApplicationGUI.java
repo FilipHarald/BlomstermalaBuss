@@ -21,10 +21,12 @@ public class ApplicationGUI extends JFrame{
 	private JButton getPaketresorButton;
 	private JButton showDetailsButton;
 	private JButton getBokningarButton;
+    private JButton deleteRow;
 	private JTable dataTable;
     private JPanel addBokningPanel;
     private JPanel addKundPanel;
     private InfoPanel infoPanel;
+    private JTextField txtInfo;
     private String currentTable = "kunder";
 	
 	
@@ -35,6 +37,7 @@ public class ApplicationGUI extends JFrame{
 		add(createTablePanel(), BorderLayout.CENTER);
 		add(createButtonPanel(), BorderLayout.SOUTH);
         add(createRightTabPanel(), BorderLayout.EAST);
+        add(createTopPanel(), BorderLayout.NORTH);
         add(infoPanel = new InfoPanel(this), BorderLayout.WEST);
         
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,6 +48,24 @@ public class ApplicationGUI extends JFrame{
 
     public DatabaseController getDbc() {
         return dbC;
+    }
+
+    public void setInfo(String text) {
+        txtInfo.setText(text);
+    }
+
+    private JPanel createTopPanel() {
+        JPanel panel = new JPanel();
+
+        JLabel lblInfo = new JLabel("Info:");
+        txtInfo = new JTextField();
+        txtInfo.setEditable(false);
+        txtInfo.setPreferredSize(new Dimension(300, 20));
+
+        panel.add(lblInfo);
+        panel.add(txtInfo);
+
+        return panel;
     }
 
     private JTabbedPane createRightTabPanel() {
@@ -65,15 +86,18 @@ public class ApplicationGUI extends JFrame{
 		getTurerButton = new JButton("Visa turer");
 		getKunderButton = new JButton("Visa kunder");
 		getBokningarButton = new JButton("Visa bokningar");
+        getPaketresorButton = new JButton("Visa paketresor");
+        deleteRow = new JButton("Ta bort rad");
 		getBokningarButton.addActionListener(listener);
 		getTurerButton.addActionListener(listener);
 		getKunderButton.addActionListener(listener);
-		getPaketresorButton = new JButton("Visa paketresor");
 		getPaketresorButton.addActionListener(listener);
+        deleteRow.addActionListener(listener);
 		buttonPanel.add(getTurerButton);
 		buttonPanel.add(getBokningarButton);
 		buttonPanel.add(getKunderButton);
 		buttonPanel.add(getPaketresorButton);
+        buttonPanel.add(deleteRow);
 		
 		return buttonPanel;
 	}
@@ -154,9 +178,43 @@ public class ApplicationGUI extends JFrame{
 					tableModel.addRow(p.split(","));
 				}
 				dataTable.setModel(tableModel);
-			} else if (e.getSource() == showDetailsButton){
-				 infoPanel.setText(dbC.getPaketresaDetails(getCurrentSelection()));
-			}
+			} else if (e.getSource() == showDetailsButton) {
+                switch (currentTable) {
+                    case "kunder":
+
+                        break;
+                    case "paketresor":
+                        infoPanel.setText(dbC.getPaketresaDetails(getCurrentSelection()));
+                        break;
+                    case "bokningar":
+                        infoPanel.setText(dbC.getBokningDetails(Integer.parseInt(getCurrentSelection())));
+                        break;
+                    case "turer":
+
+                        break;
+                }
+			} else if (e.getSource() == deleteRow) {
+                String id = getCurrentSelection();
+
+                String result = "";
+
+                switch (currentTable) {
+                    case "kunder":
+                        result = dbC.removeKund(id);
+                        break;
+                    case "paketresor":
+                        result = dbC.removePaketresa(id);
+                        break;
+                    case "bokningar":
+                        result = dbC.removeBokning(Integer.parseInt(id));
+                        break;
+                    case "turer":
+                        result = dbC.removeTur(Integer.parseInt(id));
+                        break;
+                }
+
+                setInfo(result);
+            }
 			
 		}
 		
